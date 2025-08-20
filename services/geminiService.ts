@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import type { GameContext } from '../types';
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = "AIzaSyABkxyt-MlChp1ScPsTOflXQsGcrIcayV4";
 
 if (!API_KEY) {
   throw new Error("API_KEY environment variable not set. This is required to run the application.");
