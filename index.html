@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eldoria: The Reincarnation Chronicles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Quattrocento Sans', sans-serif;
+        background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+      h1, h2, h3, h4, h5, h6, .font-cinzel {
+        font-family: 'Cinzel', serif;
+      }
+       /* Custom scrollbar for a more thematic feel */
+      .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: #ca8a04 #404040; /* thumb color track color */
+      }
+      .scrollbar-thin::-webkit-scrollbar {
+        width: 8px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-track {
+        background: #404040;
+      }
+      .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: #ca8a04;
+        border-radius: 20px;
+        border: 3px solid #404040;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.15.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-900 text-gray-200">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
