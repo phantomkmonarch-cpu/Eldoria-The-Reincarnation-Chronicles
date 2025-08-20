@@ -1,10 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import type { GameContext } from '../types';
-
-const API_KEY = "AIzaSyABkxyt-MlChp1ScPsTOflXQsGcrIcayV4";
+import { API_KEY } from '../config';
 
 if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set. This is required to run the application.");
+  throw new Error("API_KEY not found in config.ts. Please add it to run the application.");
 }
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
