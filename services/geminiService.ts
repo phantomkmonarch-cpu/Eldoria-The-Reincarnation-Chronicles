@@ -1,12 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
-import type { GameContext } from '../types';
-import { API_KEY } from '../config';
+import type { GameContext, StoryPart } from '../types';
 
-if (!API_KEY) {
-  throw new Error("API_KEY not found in config.ts. Please add it to run the application.");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+/**
+ * Mengambil kunci API dari local storage dan menginisialisasi klien GoogleGenAI.
+ * Melemparkan error jika kunci API tidak ditemukan.
+ * @returns {GoogleGenAI} Instansi klien GoogleGenAI yang sudah diinisialisasi.
+ */
+const getAiClient = (): GoogleGenAI => {
+    const apiKey = localStorage.getItem('GEMINI_API_KEY');
+    if (!apiKey) {
+      // Error ini akan ditangkap oleh fungsi pemanggil dan ditampilkan kepada pengguna.
+      throw new Error("Kunci API Gemini tidak ditemukan. Harap segarkan halaman dan masukkan kunci Anda.");
+    }
+    return new GoogleGenAI({ apiKey });
+};
 
 const buildPrompt = (gameContext: GameContext, recentHistory: string, action: string): string => {
   const seasonDirectives: Record<number, string> = {
@@ -64,6 +71,7 @@ ${gameContext.playerName}: "${action}"
 
 export const generateStory = async (gameContext: GameContext, recentHistory: string, action: string): Promise<string> => {
     try {
+        const ai = getAiClient();
         const prompt = buildPrompt(gameContext, recentHistory, action);
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -80,9 +88,10 @@ export const generateStory = async (gameContext: GameContext, recentHistory: str
     }
 };
 
-export const generateSummary = async (storyParts: any[]): Promise<string> => {
+export const generateSummary = async (storyParts: StoryPart[]): Promise<string> => {
     if (storyParts.length === 0) return "Petualangan belum dimulai.";
     try {
+        const ai = getAiClient();
         const fullStory = storyParts.map(p => `${p.type}: ${p.content}`).join('\n\n');
         const prompt = `
         Anda adalah seorang penulis sejarah untuk dunia Eldoria.
@@ -103,7 +112,11 @@ export const generateSummary = async (storyParts: any[]): Promise<string> => {
         if (!text) return "Gagal merangkum takdir...";
         return text;
     } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         console.error('AI Summary Error:', error);
+        if (errorMessage.includes("Kunci API Gemini tidak ditemukan")) {
+            return "Kunci API tidak ditemukan. Harap segarkan halaman dan masukkan kunci API Anda untuk membuat ringkasan."
+        }
         return "Gema petualangan Anda terlalu kompleks untuk dirangkum saat ini...";
     }
 };

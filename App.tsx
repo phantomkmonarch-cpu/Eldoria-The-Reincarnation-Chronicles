@@ -5,24 +5,48 @@ import GameScreen from './components/GameScreen';
 import LoadingSpinner from './components/LoadingSpinner';
 import AdminPage from './components/AdminPage';
 import LobbyScreen from './components/LobbyScreen';
+import ApiKeyPromptScreen from './components/ApiKeyPromptScreen';
 
 const App: React.FC = () => {
   const [isAdminView, setIsAdminView] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(false);
+  const [isKeyLoading, setIsKeyLoading] = useState(true);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('admin') === 'true') {
       setIsAdminView(true);
     }
+    
+    const storedApiKey = localStorage.getItem('GEMINI_API_KEY');
+    if (storedApiKey) {
+      setHasApiKey(true);
+    }
+    setIsKeyLoading(false);
   }, []);
 
   const game = useGame();
+
+  const handleApiKeySubmit = (key: string) => {
+    localStorage.setItem('GEMINI_API_KEY', key);
+    setHasApiKey(true);
+  };
   
+  if (isKeyLoading) {
+    return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-4">
+            <div className="w-full max-w-4xl h-[95vh] bg-gray-900/60 backdrop-blur-md rounded-lg shadow-2xl shadow-black/50 border border-yellow-700/20 flex flex-col justify-center items-center">
+                <LoadingSpinner size="lg" />
+            </div>
+        </div>
+    );
+  }
+
   if (isAdminView) {
     return <AdminPage />;
   }
 
-  const renderView = () => {
+  const renderGameView = () => {
     switch (game.gameState.currentView) {
       case 'loading':
         return (
@@ -71,7 +95,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-4xl h-[95vh] bg-gray-900/60 backdrop-blur-md rounded-lg shadow-2xl shadow-black/50 border border-yellow-700/20 flex flex-col">
-        {renderView()}
+        {!hasApiKey && !isAdminView ? <ApiKeyPromptScreen onApiKeySubmit={handleApiKeySubmit} /> : renderGameView()}
       </div>
     </div>
   );
